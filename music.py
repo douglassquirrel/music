@@ -10,12 +10,20 @@ for measure in root.iter('measure'):
    print("Bar %s" % measure.get('number'))
    for note in measure.iter('note'):
      pitch = note.find('pitch')
-     step = pitch.find('step').text
-     alter = alters.get(pitch.find('alter').text, 'unknown alteration')
-     octave = pitch.find('octave').text
+     rest = note.find('rest')
+     if pitch is not None:
+       step = pitch.find('step').text
+       alter = alters.get(pitch.find('alter').text, 'unknown alteration')
+       octave = pitch.find('octave').text
+       note_string = "%s%s %s" % (step, octave, alter)
+     elif rest is not None:
+       note_string = "rest"
+     else:
+       print "Note is neither rest nor pitch"
+       sys.exit()
 
      duration = note.find('type').text
      if (note.find('dot') is not None):
        duration = "dotted %s" % duration
 
-     print "%s%s %s %s" % (step, octave, alter, duration)
+     print "%s %s" % (note_string, duration)
